@@ -1,2 +1,2 @@
 # Mini progetto informatica (blitz)
-Prima di iniziare ad usare esportare il file db.sql sul database
+Prima di iniziare ad usare, importare il file db.sql sul database
