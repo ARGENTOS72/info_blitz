@@ -10,7 +10,7 @@ if (!isset($_SESSION['login'])) {
 require "../../../include/db.php";
 $conn = accediDb();
 
-if (isset($_POST['remove_true']) && isset($_POST['id']) && $_POST['id'] != 1) {
+if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 1) {
     $id = $_POST['id'];
 
     $sql = "DELETE FROM utente WHERE id=$id";
@@ -33,33 +33,24 @@ if (isset($_POST['remove_true']) && isset($_POST['id']) && $_POST['id'] != 1) {
     </style>
 </head>
 <body>
-    <?php if (isset($_POST['remove']) && isset($_POST['id']) && $_POST['id'] != 1): ?>
-    <div class="modal" tabindex="-1">
+    <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Sei sicuro di eliminare?</h5>
+                    <h5 class="modal-title">Sei sicuro di volerlo eliminare?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p>Modal body text goes here.</p>
-                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                     <form method="post">
-                        <input type="hidden" name="id" value="<?= $_POST['id'] ?>">
-                        <input type="submit" value="SI" name="remove_true">
-                        <input type="submit" value="NO" name="remove_false">
+                        <input type="hidden" name="id" id="id-input-remove-definetly">
+                        <input type="submit" value="SI" name="remove_definetly" class="btn btn-primary">
                     </form>
                 </div>
             </div>
             </div>
         </div>
-        <h2></h2>
-        
     </div>
-    <?php endif; ?>
     <div class="container my-4">
         <h1 class="px-4">Lista utenti</h1>
         <?php $result = $conn->query("SELECT * FROM utente"); ?>
@@ -83,9 +74,10 @@ if (isset($_POST['remove_true']) && isset($_POST['id']) && $_POST['id'] != 1) {
                 <td>
                     <a href="update.php?id=<?= $row['id'] ?>" class="btn btn-link">Update</a>
                     |
-                    <form method="post" id="remove">
+                    <form method="post" class="remove-user-form">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                        <input type="submit" name="remove" value="Remove" role="link" class="btn btn-link">
+                        <input type="submit" name="remove" value="Remove" role="link"
+                            class="btn btn-link" data-bs-toggle="modal" data-bs-target="#removeModal">
                     </form>
                 </td>
             </tr>
@@ -93,5 +85,19 @@ if (isset($_POST['remove_true']) && isset($_POST['id']) && $_POST['id'] != 1) {
         </table>
         <a href="create.php" class="btn btn-primary">Crea</a>
     </div>
+    <script>
+        const removeUserForms = document.getElementsByClassName('remove-user-form');
+
+        console.log(removeUserForms);
+
+        Array.prototype.forEach.call(removeUserForms, form => {
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+
+                document.getElementById('id-input-remove-definetly').value = e.target.id.value;
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
