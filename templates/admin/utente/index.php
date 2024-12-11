@@ -27,7 +27,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
     <title>Amministrazione</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        form#remove {
+        form.remove-user-form {
             display: inline-block;
         }
     </style>
@@ -76,8 +76,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
                     |
                     <form method="post" class="remove-user-form">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                        <input type="submit" name="remove" value="Remove" role="link"
-                            class="btn btn-link" data-bs-toggle="modal" data-bs-target="#removeModal">
+                        <input type="submit" class="btn btn-outline-danger" value="Remove" data-bs-toggle="modal" data-bs-target="#removeModal">
                     </form>
                 </td>
             </tr>
@@ -88,10 +87,9 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
     <script>
         const removeUserForms = document.getElementsByClassName('remove-user-form');
 
-        console.log(removeUserForms);
-
         Array.prototype.forEach.call(removeUserForms, form => {
             form.addEventListener('submit', e => {
+                // Prevents reloading the page when the form is submited
                 e.preventDefault();
 
                 document.getElementById('id-input-remove-definetly').value = e.target.id.value;
