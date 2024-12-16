@@ -7,6 +7,10 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
+$_SESSION['current_page'] = "utente";
+
+$ruolo = "admin";
+
 if (isset($_GET['id'])) {
     require "../../../include/db.php";
     $conn = accediDb();
@@ -53,22 +57,48 @@ if (isset($_GET['id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Modifica utente</h1>
-    <a href="index.php"><- Utenti</a>
-    <form method="post">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" value="<?= $nome ?>">
-        <br>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" name="cognome" value="<?= $cognome ?>">
-        <br>
-        <label for="login">Login:</label>
-        <input type="text" id="login" name="login" value="<?= $login ?>">
-        <br>
-        <label for="password">Password:</label>
-        <input type="text" id="password" name="password">
-        <br>
-        <input type="submit" value="Modifica" name="update">
-    </form>
+    <?php
+    if ($ruolo == "admin") {
+    require "../../helpers/admin_navbar.php";
+    }
+    ?>
+    <div class="container my-4">
+        <h1>Modifica utente</h1>
+        <form method="post">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="<?= $nome ?>">
+            <br>
+            <label for="cognome">Cognome:</label>
+            <input type="text" id="cognome" name="cognome" value="<?= $cognome ?>">
+            <br>
+            <label for="login">Login:</label>
+            <input type="text" id="login" name="login" value="<?= $login ?>">
+            <br>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password">
+            <br>
+            <input type="submit" value="Modifica" name="update">
+        </form>
+    </div>
+    <script>
+        const form = document.getElementsByTagName('form')[0];
+        let formModified = false;
+
+        form.addEventListener('change', () => {
+            formModified = true;
+        });
+
+        form.addEventListener('submit', () => {
+            formModified = false;
+        });
+
+        window.addEventListener("beforeunload", event => {
+            if (formModified) {
+                event.preventDefault();
+                event.returnValue = "";
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
