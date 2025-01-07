@@ -50,7 +50,9 @@ if (isset($_POST['create'])) {
     ?>
     <div class="container my-4">
     <h1>Creazione utente</h1>    <h1>Creazione utente</h1>
+    <h1>Creazione utente</h1>
     <form method="post">
+        <label for="nome">Titolo:</label>
         <input type="text" id="nome" name="nome">
         <br>
         <label for="cognome">Descrizione:</label>
