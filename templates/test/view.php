@@ -43,7 +43,7 @@ if (isset($_GET['id'])) {
 <body>
     <?php
     if ($ruolo == "admin") {
-    require "../helpers/admin_navbar.php";
+        require "../helpers/admin_navbar.php";
     }
     ?>
     <h1><?= $titolo ?></h1>
@@ -54,14 +54,16 @@ if (isset($_GET['id'])) {
         $result_domande = $conn->query($sql);
 
         while ($domanda = $result_domande->fetch_assoc()):
-            if ($domanda['scelta_multipla'] != null) {
-                $id_scelta_multipla = $domanda['scelta_multipla'];
+            switch ($domanda['tipo']) {
+                case "multipla":
+                    
+                    
+                    break;
+                    
+                case "aperta":
 
-                $sql = "SELECT * FROM opzioni_domanda_multipla WHERE
-                    id_domanda_multipla=$id_scelta_multipla";
-                $result_opzioni_domanda_multipla = $conn->query($sql);
 
-                $opzioni_scelta_multipla = $result_opzioni_domanda_multipla->fetch_all(MYSQLI_ASSOC);
+                    break;
             }
         ?>
         <div>
