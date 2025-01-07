@@ -11,9 +11,10 @@ if (isset($_POST['comando'])) {
     require "../include/db.php";
     $conn = accediDb();
 
-    $post_login = htmlspecialchars($_POST['login']);
-    $post_password = htmlspecialchars($_POST['password']);
-    $sql = "SELECT * FROM utente WHERE login='$post_login' AND password='$post_password'";
+    $post_login = $sql->real_escape_string(htmlspecialchars($_POST['login']));
+    $post_password = $sql->real_escape_string(htmlspecialchars($_POST['password']));
+    $hashed_password = password_hash($post_password, PASSWORD_BCRYPT);
+    $sql = "SELECT * FROM utente WHERE login='$post_login' AND password='$hashed_password'";
     $result = $conn->query($sql);
     
     if ($result->num_rows == 1) {
