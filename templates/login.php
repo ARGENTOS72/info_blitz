@@ -26,8 +26,21 @@ if (isset($_POST['comando'])) {
             $_SESSION['login'] = $post_login;
             $_SESSION['role'] = $utente['ruolo'];
             $_SESSION['id_utente'] = $utente['id'];
+
+            if ($utente['ruolo'] == "studente") {
+                $result = $conn->query("SELECT classe FROM studente WHERE id_utente=".$utente['id']);
+                $studente = $result->fetch_assoc();
+
+                $_SESSION['class'] = $studente['classe'];
+
+                header("location: sessione/index.php");
+
+                die();
+            }
     
             header("location: admin/utente/index.php");
+
+            die();
         }
     }
 }

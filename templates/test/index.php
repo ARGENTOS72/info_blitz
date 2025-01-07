@@ -89,10 +89,9 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
         $result = $conn->query($sql);
         ?>
 
-        <table class="table">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Titolo</th>
                     <th>Descrizione</th>
                     <!-- Mostra la colonna "Id Docente" solo per gli admin -->
@@ -105,12 +104,11 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><a href="view.php?id=<?= $row['id'] ?>"><?= $row['id'] ?></a></td>
                         <td><?= $row['titolo'] ?></td>
-                        <td><?= $row['descrizione'] ?></td>
+                        <td><?= (empty($row['descrizione'])) ? "Nessuna descrizione" : $row['descrizione'] ?></td>
                         <!-- Mostra l'ID del docente solo per gli admin -->
                         <?php if ($ruolo == "admin"): ?>
-                            <td><?= $row['id_docente'] ?></td>
+                            <td><a href="../admin/utente/view.php?id=<?= $row['id_docente'] ?>"><?= $row['id_docente'] ?></a></td>
                         <?php endif; ?>
                         <td>
                             <div class="d-flex align-items-center gap-1">

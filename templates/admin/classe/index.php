@@ -84,7 +84,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['classe'])) {
             </tr>
             
             <?php while ($row = $result->fetch_assoc()): ?>
-            <tr>
+            <tr class="align-middle">
                 <td><?= $row['classe'] ?></td>
                 <td>
                     <div class="d-flex align-items-center gap-1">

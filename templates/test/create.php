@@ -65,7 +65,7 @@ if (isset($_POST['create'])) {
     <?php
     //non permanente
     if ($ruolo == "admin") {
-        require "../../helpers/admin_navbar.php";
+        require "../helpers/admin_navbar.php";
     }
     ?>
     <div class="container my-4">

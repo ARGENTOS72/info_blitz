@@ -40,10 +40,7 @@ $current_page = (isset($_SESSION['current_page'])) ? $_SESSION['current_page'] :
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page == "utente") ? "active" : "" ?>" <?= ($current_page == "utente") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/admin/utente/">Utenti</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= ($current_page == "test") ? "active" : "" ?>" <?= ($current_page == "test") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/test">Sessioni-Test</a>
+                    <a class="nav-link <?= ($current_page == "test") ? "active" : "" ?>" <?= ($current_page == "test") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/sessione/index.php">Sessioni test</a>
                 </li>
             </ul>
         </div>

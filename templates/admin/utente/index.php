@@ -86,7 +86,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
             </tr>
             
             <?php while ($row = $result->fetch_assoc()): ?>
-            <tr>
+            <tr class="align-middle">
                 <td><?= $row['nome'] ?></td>
                 <td><?= $row['cognome'] ?></td>
                 <td><?= $row['login'] ?></td>
