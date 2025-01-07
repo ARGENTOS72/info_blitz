@@ -8,3 +8,7 @@ function accediDb() {
 
     return $conn;
 }
+
+function normalize($conn, $value) {
+    return $conn->real_escape_string(htmlspecialchars($value));
+}

@@ -34,6 +34,11 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
         form.remove-user-form {
             display: inline-block;
         }
+
+        table tr td:last-child {
+            white-space: nowrap;
+            width: 1%
+        }
     </style>
 </head>
 <body>

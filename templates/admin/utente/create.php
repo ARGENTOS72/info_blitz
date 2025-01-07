@@ -15,36 +15,26 @@ if (isset($_POST['create'])) {
     require "../../../include/db.php";
     $conn = accediDb();
 
-    $nome = $conn->real_escape_string(htmlspecialchars($_POST['nome']));
-    $cognome = $conn->real_escape_string(htmlspecialchars($_POST['cognome']));
-    $login = $conn->real_escape_string(htmlspecialchars($_POST['login']));
-    $password = $conn->real_escape_string(htmlspecialchars($_POST['password']));
-    $ruolo = $conn->real_escape_string(htmlspecialchars($_POST['ruolo']));
-    $password_hash = password_hash($post_password, PASSWORD_BCRYPT);
+    $nome = normalize($conn, $_POST['nome']);
+    $cognome = normalize($conn, $_POST['cognome']);
+    $login = normalize($conn, $_POST['login']);
+    $password = normalize($conn, $_POST['password']);
+    $ruolo = normalize($conn, $_POST['ruolo']);
+    $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
     $sql = "INSERT INTO utente (nome, cognome, login, password, ruolo) VALUES
-        ('$nome', '$cognome', '$login', '$password_hash', $ruolo)";
+        ('$nome', '$cognome', '$login', '$password_hash', '$ruolo')";
 
-    switch ($ruolo) {
-        case "studente":
-            
-            break;
-        
-        case "docente":
+    $conn->query($sql);
 
-            break;
+    if ($ruolo == "studente") {
+        $sql = "INSERT INTO studente (id_utente, classe) VALUES
+            (".$conn->insert_id.", '".normalize($conn, $_POST['classe'])."')";
+
+        $conn->query($sql);
     }
 
-    try {
-        $result = $conn->query($sql);
-
-        header("Location: index.php");
-    
-        die();
-    } catch (mysqli_sql_exception $err) {
-        echo $err->getMessage();
-        echo $err->getSqlState();
-    }
+    header("Location: index.php");
 }
 ?>
 <!DOCTYPE html>
