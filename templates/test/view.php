@@ -49,43 +49,49 @@ if (isset($_GET['id'])) {
     <h1><?= $titolo ?></h1>
     <h2><?= $descrizione ?></h2>
     <form action="elabora.php" method="post">
+        <!-- DOMANDE -->
         <?php
         $sql = "SELECT * FROM domanda WHERE id_test=$id_test";
         $result_domande = $conn->query($sql);
 
         while ($domanda = $result_domande->fetch_assoc()):
-            switch ($domanda['tipo']) {
-                case "multipla":
-                    
-                    
-                    break;
-                    
-                case "aperta":
-
-
-                    break;
-            }
+        $id_domanda = $domanda['id'];
         ?>
         <div>
             <p><?= $domanda['testo_domanda'] ?></p>
+
+            <!-- DOMANDA MULTIPLA -->
             <?php
-            if ($domanda['scelta_multipla'] != null):
-                foreach ($opzioni_scelta_multipla as $opzione_scelta_multipla):
-                    $radio_id = $domanda['id']." ".$id_scelta_multipla." ".$opzione_scelta_multipla['id'];
+            switch ($domanda['tipo']):
+            case "multipla":
+
+            $sql = "SELECT * FROM domanda_multipla WHERE id_domanda=".$id_domanda;
+            $result_opzioni_multipla = $conn->query($sql);
+            
+            while ($opzione_scelta_multipla = $result_opzioni_multipla->fetch_assoc()):
+                $radio_id = $id_domanda." ".$opzione_scelta_multipla['id'];
             ?>
-            <input type="radio" name="<?= $domanda['id'] ?>"
+
+            <input type="radio" name="<?= $id_domanda ?>"
                 id="<?= $radio_id ?>" value="<?= $opzione_scelta_multipla['id'] ?>">
             <label for="<?= $radio_id ?>"><?= $opzione_scelta_multipla['testo_opzione'] ?></label>
             <br>
-            <?php
-            endforeach;
+            <?php endwhile; ?>
 
-            ;else:
-            ?>
-            <textarea name="<?= $domanda['id'] ?>"></textarea>
-            <?php endif; ?>
+            <?php break; ?>
+            <!-- FINE DOMANDA MULTIPLA -->
+            
+            <!-- DOMANDA APERTA -->
+            <?php case "aperta": ?>
+            <textarea name="<?= $id_domanda ?>"></textarea>
+            <?php break; ?>
+            <!-- FINE DOMANDA APERTA -->
+
+            <?php endswitch; ?>
         </div>
         <?php endwhile; ?>
+        <!-- FINE DOMANDE -->
+
         <input type="submit" value="Invia" name="invia">
     </form>
     <script>

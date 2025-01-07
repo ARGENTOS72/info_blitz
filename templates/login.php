@@ -14,14 +14,15 @@ if (isset($_POST['comando'])) {
     $post_login = $conn->real_escape_string(htmlspecialchars($_POST['login']));
     $post_password = $conn->real_escape_string(htmlspecialchars($_POST['password']));
 
-    $hashed_password = password_hash($post_password, PASSWORD_BCRYPT);
-    $is_password_right = password_verify($post_password, $hashed_password);
+    $sql = "SELECT * FROM utente WHERE login='$post_login'";
+    $result = $conn->query($sql);
 
-    if ($is_password_right) {
-        $sql = "SELECT * FROM utente WHERE login='$post_login'";
-        $result = $conn->query($sql);
+    if ($result->num_rows == 1) {
+        $utente = $result->fetch_assoc();
 
-        if ($result->num_rows == 1) {
+        $is_password_right = password_verify($post_password, $utente['password']);
+        
+        if ($is_password_right) { 
             $_SESSION['login'] = $post_login;
     
             header("location: admin/utente/index.php");

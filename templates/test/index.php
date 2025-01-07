@@ -46,7 +46,6 @@ $conn = accediDb();
                 <th>Id</th>
                 <th>titolo</th>
                 <th>Descrizione</th>
-                <th>Id Docente</th>
             </tr>
             
             <?php while ($row = $result->fetch_assoc()): ?>
@@ -54,7 +53,6 @@ $conn = accediDb();
                 <td><a href="view.php?id=<?= $row['id'] ?>"><?= $row['id'] ?></a></td>
                 <td><?= $row['titolo'] ?></td>
                 <td><?= $row['descrizione'] ?></td>
-                <td><?= $row[''] ?></td>
             </tr>
             <?php endwhile; ?>
         </table>

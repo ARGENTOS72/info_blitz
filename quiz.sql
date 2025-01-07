@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 07, 2025 alle 16:28
+-- Creato il: Gen 07, 2025 alle 17:38
 -- Versione del server: 10.4.28-MariaDB
 -- Versione PHP: 8.2.4
 
@@ -28,9 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `classe` (
-  `id` int(11) NOT NULL,
   `classe` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `classe`
+--
+
+INSERT INTO `classe` (`classe`) VALUES
+('A'),
+('asa'),
+('asd'),
+('e'),
+('f'),
+('r'),
+('x');
 
 -- --------------------------------------------------------
 
@@ -61,8 +73,8 @@ CREATE TABLE `domanda` (
 --
 
 INSERT INTO `domanda` (`id`, `id_test`, `tipo`, `testo_domanda`) VALUES
-(1, 1, 'multipla', 'Does skibidi toilet lives under your house?'),
-(2, 1, 'aperta', 'Chi è il più sigma tra questi?');
+(1, 1, 'aperta', 'Does skibidi toilet lives under your house?'),
+(2, 1, 'multipla', 'Chi è il più sigma tra questi?');
 
 -- --------------------------------------------------------
 
@@ -105,13 +117,26 @@ CREATE TABLE `risposta` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `sessione_test`
+--
+
+CREATE TABLE `sessione_test` (
+  `id` int(11) NOT NULL,
+  `id_test` int(11) NOT NULL,
+  `id_docente` int(11) NOT NULL,
+  `id_classe` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `studente`
 --
 
 CREATE TABLE `studente` (
   `id` int(11) NOT NULL,
   `id_utente` int(11) NOT NULL,
-  `id_classe` int(11) NOT NULL
+  `classe` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -165,7 +190,7 @@ INSERT INTO `utente` (`id`, `nome`, `cognome`, `login`, `password`, `ruolo`) VAL
 -- Indici per le tabelle `classe`
 --
 ALTER TABLE `classe`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`classe`);
 
 --
 -- Indici per le tabelle `docente`
@@ -192,6 +217,12 @@ ALTER TABLE `risposta`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indici per le tabelle `sessione_test`
+--
+ALTER TABLE `sessione_test`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indici per le tabelle `studente`
 --
 ALTER TABLE `studente`
@@ -213,12 +244,6 @@ ALTER TABLE `utente`
 --
 -- AUTO_INCREMENT per le tabelle scaricate
 --
-
---
--- AUTO_INCREMENT per la tabella `classe`
---
-ALTER TABLE `classe`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `docente`
@@ -245,6 +270,12 @@ ALTER TABLE `risposta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
+-- AUTO_INCREMENT per la tabella `sessione_test`
+--
+ALTER TABLE `sessione_test`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT per la tabella `studente`
 --
 ALTER TABLE `studente`
@@ -260,7 +291,7 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -15,13 +15,25 @@ if (isset($_POST['create'])) {
     require "../../../include/db.php";
     $conn = accediDb();
 
-    $nome = $conn->real_escape_string($_POST['nome']);
-    $cognome = $conn->real_escape_string($_POST['cognome']);
-    $login = $conn->real_escape_string($_POST['login']);
-    $password = $conn->real_escape_string($_POST['password']);
+    $nome = $conn->real_escape_string(htmlspecialchars($_POST['nome']));
+    $cognome = $conn->real_escape_string(htmlspecialchars($_POST['cognome']));
+    $login = $conn->real_escape_string(htmlspecialchars($_POST['login']));
+    $password = $conn->real_escape_string(htmlspecialchars($_POST['password']));
+    $ruolo = $conn->real_escape_string(htmlspecialchars($_POST['ruolo']));
+    $password_hash = password_hash($post_password, PASSWORD_BCRYPT);
 
-    $sql = "INSERT INTO utente (id, nome, cognome, login, password) VALUES
-        (null, '$nome', '$cognome', '$login', '$password')";
+    $sql = "INSERT INTO utente (nome, cognome, login, password, ruolo) VALUES
+        ('$nome', '$cognome', '$login', '$password_hash', $ruolo)";
+
+    switch ($ruolo) {
+        case "studente":
+            
+            break;
+        
+        case "docente":
+
+            break;
+    }
 
     try {
         $result = $conn->query($sql);
@@ -64,6 +76,14 @@ if (isset($_POST['create'])) {
         <label for="password">Password:</label>
         <input type="text" id="password" name="password">
         <br>
+        <label for="ruolo">Ruolo utente:</label>
+        <select name="ruolo" id="ruolo">
+            <option value="admin">Admin</option>
+            <option value="docente">Docente</option>
+            <option value="studente">Studente</option>
+        </select>
+        <br>
+        <div id="dati-ruolo"></div>
         <input type="submit" value="Crea" name="create">
     </form>
     </div>
@@ -85,6 +105,51 @@ if (isset($_POST['create'])) {
                 event.returnValue = "";
             }
         });
+
+        const dati_ruolo_aggiuntivi = document.getElementById('dati-ruolo');
+        document.getElementById('ruolo').addEventListener('input', e => {
+            let value = e.target.value;
+
+            if (value === "studente") {
+                let req = new XMLHttpRequest();
+                req.open("GET", "../../../controllers/classi.php");
+            
+                req.onload = () => {
+                    if (req.status === 200) {
+                        let classi = JSON.parse(req.responseText);
+
+                        let classi_input_form = document.createElement('div');
+
+                        let classi_label = document.createElement('label');
+                        classi_label.innerText = "Classe:";
+                        classi_label.for = "classe";
+
+                        let classi_input = document.createElement('select');
+                        classi_input.id = "classe";
+                        classi_input.name = "classe";
+
+                        classi.forEach(classe => {
+                            let classe_option = document.createElement('option');
+                            classe_option.value = classe;
+                            classe_option.innerText = classe;
+
+                            classi_input.appendChild(classe_option);
+                        });
+
+                        classi_input_form.appendChild(classi_label);
+                        classi_input_form.appendChild(classi_input);
+
+                        dati_ruolo_aggiuntivi.appendChild(classi_input_form);
+                    }
+                }
+
+                req.send();
+            } else {
+                if (dati_ruolo_aggiuntivi.firstChild) {
+                    dati_ruolo_aggiuntivi.removeChild(dati_ruolo_aggiuntivi.firstChild);
+                }
+            }
+        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
