@@ -24,6 +24,8 @@ if (isset($_POST['comando'])) {
         
         if ($is_password_right) { 
             $_SESSION['login'] = $post_login;
+            $_SESSION['role'] = $utente['ruolo'];
+            $_SESSION['id_utente'] = $utente['id'];
     
             header("location: admin/utente/index.php");
         }
