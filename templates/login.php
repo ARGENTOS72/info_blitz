@@ -11,16 +11,21 @@ if (isset($_POST['comando'])) {
     require "../include/db.php";
     $conn = accediDb();
 
-    $post_login = $sql->real_escape_string(htmlspecialchars($_POST['login']));
-    $post_password = $sql->real_escape_string(htmlspecialchars($_POST['password']));
-    $hashed_password = password_hash($post_password, PASSWORD_BCRYPT);
-    $sql = "SELECT * FROM utente WHERE login='$post_login' AND password='$hashed_password'";
-    $result = $conn->query($sql);
-    
-    if ($result->num_rows == 1) {
-        $_SESSION['login'] = $post_login;
+    $post_login = $conn->real_escape_string(htmlspecialchars($_POST['login']));
+    $post_password = $conn->real_escape_string(htmlspecialchars($_POST['password']));
 
-        header("location: admin/utente/index.php");
+    $hashed_password = password_hash($post_password, PASSWORD_BCRYPT);
+    $is_password_right = password_verify($post_password, $hashed_password);
+
+    if ($is_password_right) {
+        $sql = "SELECT * FROM utente WHERE login='$post_login'";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows == 1) {
+            $_SESSION['login'] = $post_login;
+    
+            header("location: admin/utente/index.php");
+        }
     }
 }
 ?>
