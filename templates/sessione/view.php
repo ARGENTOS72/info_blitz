@@ -85,7 +85,6 @@ if (isset($_GET['id'])) {
                         <label for="<?= $id_input ?>"><?= $opzione_scelta_multipla['testo_opzione'] ?></label>
                         <br>
                     <?php else: ?>
-                        <input type="checkbox" name="<?= $id_domanda ?>"
                         <input type="checkbox" name="<?= $id_domanda ?>[]"
                             id="<?= $id_input ?>" value="<?= $opzione_scelta_multipla['id'] ?>">
                         <label for="<?= $id_input ?>"><?= $opzione_scelta_multipla['testo_opzione'] ?></label>
