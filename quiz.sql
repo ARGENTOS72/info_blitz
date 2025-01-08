@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 07, 2025 alle 17:38
+-- Creato il: Gen 08, 2025 alle 07:44
 -- Versione del server: 10.4.28-MariaDB
 -- Versione PHP: 8.2.4
 
@@ -36,24 +36,7 @@ CREATE TABLE `classe` (
 --
 
 INSERT INTO `classe` (`classe`) VALUES
-('A'),
-('asa'),
-('asd'),
-('e'),
-('f'),
-('r'),
-('x');
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `docente`
---
-
-CREATE TABLE `docente` (
-  `id` int(11) NOT NULL,
-  `id_utente` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+('1A');
 
 -- --------------------------------------------------------
 
@@ -65,16 +48,17 @@ CREATE TABLE `domanda` (
   `id` int(11) NOT NULL,
   `id_test` int(11) NOT NULL,
   `tipo` enum('multipla','aperta') NOT NULL,
-  `testo_domanda` text NOT NULL
+  `testo_domanda` text NOT NULL,
+  `punteggio` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `domanda`
 --
 
-INSERT INTO `domanda` (`id`, `id_test`, `tipo`, `testo_domanda`) VALUES
-(1, 1, 'aperta', 'Does skibidi toilet lives under your house?'),
-(2, 1, 'multipla', 'Chi è il più sigma tra questi?');
+INSERT INTO `domanda` (`id`, `id_test`, `tipo`, `testo_domanda`, `punteggio`) VALUES
+(1, 1, 'aperta', 'Does skibidi toilet lives under your house?', 10),
+(2, 1, 'multipla', 'Chi è il più sigma tra questi?', 2);
 
 -- --------------------------------------------------------
 
@@ -111,6 +95,8 @@ INSERT INTO `domanda_multipla` (`id`, `id_domanda`, `testo_opzione`, `corretta`)
 CREATE TABLE `risposta` (
   `id` int(11) NOT NULL,
   `id_domanda` int(11) NOT NULL,
+  `id_studente` int(11) NOT NULL,
+  `id_sessione_test` int(11) NOT NULL,
   `risposta` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -124,8 +110,16 @@ CREATE TABLE `sessione_test` (
   `id` int(11) NOT NULL,
   `id_test` int(11) NOT NULL,
   `id_docente` int(11) NOT NULL,
-  `id_classe` int(11) NOT NULL
+  `classe` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `sessione_test`
+--
+
+INSERT INTO `sessione_test` (`id`, `id_test`, `id_docente`, `classe`) VALUES
+(1, 1, 1, '1A'),
+(2, 2, 1, '1A');
 
 -- --------------------------------------------------------
 
@@ -138,6 +132,13 @@ CREATE TABLE `studente` (
   `id_utente` int(11) NOT NULL,
   `classe` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `studente`
+--
+
+INSERT INTO `studente` (`id`, `id_utente`, `classe`) VALUES
+(3, 34, '1A');
 
 -- --------------------------------------------------------
 
@@ -180,7 +181,9 @@ CREATE TABLE `utente` (
 --
 
 INSERT INTO `utente` (`id`, `nome`, `cognome`, `login`, `password`, `ruolo`) VALUES
-(1, 'skibidi', 'toilet', 'fornei', '$2y$10$o1QxtrZHtZQXY8HuonpoQOjufRwiB8JfGkbitwUESF5AePsQnZ.0e', 'admin');
+(1, 'skibidi', 'toilet', 'fornei', '$2y$10$NWNGWmTS3fd5kz74VXEdEerGU7qAhh9GEJlzy4dlSFVwzwxzecQ9W', 'admin'),
+(34, 'Studente', 'Studente', 'Studente', '$2y$10$iDHmC0BFh.GRVE.xBhUvCuAz6w22SdylfdZjmIx..nj4U5.lA136a', 'studente'),
+(35, 'Docente', 'Docente', 'Docente', '$2y$10$giDv/btYyMTR.wHfvcJKduk33E9T6u7HNi3rzSAVMEENsoTZkYWOC', 'docente');
 
 --
 -- Indici per le tabelle scaricate
@@ -191,12 +194,6 @@ INSERT INTO `utente` (`id`, `nome`, `cognome`, `login`, `password`, `ruolo`) VAL
 --
 ALTER TABLE `classe`
   ADD PRIMARY KEY (`classe`);
-
---
--- Indici per le tabelle `docente`
---
-ALTER TABLE `docente`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indici per le tabelle `domanda`
@@ -246,12 +243,6 @@ ALTER TABLE `utente`
 --
 
 --
--- AUTO_INCREMENT per la tabella `docente`
---
-ALTER TABLE `docente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT per la tabella `domanda`
 --
 ALTER TABLE `domanda`
@@ -273,25 +264,25 @@ ALTER TABLE `risposta`
 -- AUTO_INCREMENT per la tabella `sessione_test`
 --
 ALTER TABLE `sessione_test`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `studente`
 --
 ALTER TABLE `studente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `test`
 --
 ALTER TABLE `test`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
