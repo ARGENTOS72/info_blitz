@@ -11,7 +11,6 @@ $id_utente = $_SESSION['id_utente'];
 $ruolo = "admin";
 
 if (isset($_POST['create'])) {
-    require "../../../include/db.php";
     require "../../include/db.php";
     $conn = accediDb();
 
@@ -20,7 +19,6 @@ if (isset($_POST['create'])) {
     $descrizione = $conn->real_escape_string($_POST['descrizione']);
 
     // Inserisci il test nel database
-    $sql = "INSERT INTO test (titolo, descrizione) VALUES ('$titolo', '$descrizione')";
     $sql = "INSERT INTO test (titolo, descrizione, id_docente) VALUES ('$titolo', '$descrizione', '$id_utente')";
     if ($conn->query($sql) === TRUE) {
         $test_id = $conn->insert_id; // Ottieni l'ID del test appena creato
