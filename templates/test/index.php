@@ -10,7 +10,7 @@ $_SESSION['current_page'] = "test";
 
 // Recupera il ruolo dall'utente (esempio: dalla sessione o dal database)
 $ruolo = $_SESSION['role']; // Assicurati che il ruolo sia memorizzato nella sessione dopo il login
-$utente_id = $_SESSION['utente_id']; // ID dell'utente loggato (utile per i docenti)
+$id_utente = $_SESSION['id_utente']; // ID dell'utente loggato (utile per i docenti)
 
 require "../../include/db.php";
 $conn = accediDb();
@@ -83,7 +83,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
             $sql = "SELECT * FROM test";
         } elseif ($ruolo == "docente") {
             // Docente vede solo i test associati al proprio ID
-            $sql = "SELECT * FROM test WHERE id_docente = $utente_id";
+            $sql = "SELECT * FROM test WHERE id_docente = $id_utente";
         }
 
         $result = $conn->query($sql);

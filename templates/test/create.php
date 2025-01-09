@@ -7,10 +7,12 @@ if (!isset($_SESSION['login'])) {
 }
 
 $_SESSION['current_page'] = "test";
+$id_utente = $_SESSION['id_utente'];
 $ruolo = "admin";
 
 if (isset($_POST['create'])) {
     require "../../../include/db.php";
+    require "../../include/db.php";
     $conn = accediDb();
 
     // Recupera i dati del test
@@ -19,11 +21,13 @@ if (isset($_POST['create'])) {
 
     // Inserisci il test nel database
     $sql = "INSERT INTO test (titolo, descrizione) VALUES ('$titolo', '$descrizione')";
+    $sql = "INSERT INTO test (titolo, descrizione, id_docente) VALUES ('$titolo', '$descrizione', '$id_utente')";
     if ($conn->query($sql) === TRUE) {
         $test_id = $conn->insert_id; // Ottieni l'ID del test appena creato
 
         // Gestione delle domande
         if (isset($_POST['domande'])) {
+
             foreach ($_POST['domande'] as $domanda) {
                 $testo_domanda = $conn->real_escape_string($domanda['testo']);
                 $tipo_domanda = $conn->real_escape_string($domanda['tipo']);
@@ -83,7 +87,7 @@ if (isset($_POST['create'])) {
             <div id="domande">
             </div>
 
-            <!-- i due bottoni che si occupano di creare le domande multiple -->
+            <!-- i due bottoni che si occupano di creare i tipi di domande -->
             <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('multipla')"> + domanda multiple</button>
             <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('aperta')"> + domanda aperta</button>
 
