@@ -36,7 +36,7 @@ $conn = accediDb();
             $sql =
                 "SELECT sessione_test.* FROM sessione_test LEFT JOIN risposta
                 ON risposta.id_sessione_test=sessione_test.id AND risposta.id_studente=$id_utente
-                WHERE risposta.id IS NULL AND sessione_test.classe='$classe'"
+                WHERE risposta.id IS NULL AND sessione_test.classe='$classe'";
             ?>
             <?php $result = $conn->query($sql); ?>
             <?php while ($sessione_test = $result->fetch_assoc()): ?>

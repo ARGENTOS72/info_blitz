@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
     require "../../include/db.php";
     $conn = accediDb();
 
-    $id_test = $_GET['id'];
+    $id_test = normalize($conn, $_GET['id']);
 
     $sql = "SELECT * FROM test WHERE id=$id_test";
     $result_test = $conn->query($sql);

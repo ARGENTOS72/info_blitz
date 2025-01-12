@@ -7,9 +7,13 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-$_SESSION['current_page'] = "classe";
+if ($_SESSION['role'] != "admin") {
+    http_response_code(403);
 
-$ruolo = "admin";
+    die();
+}
+
+$_SESSION['current_page'] = "classe";
 
 require "../../../include/db.php";
 $conn = accediDb();
@@ -42,11 +46,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['classe'])) {
     </style>
 </head>
 <body>
-    <?php
-    if ($ruolo == "admin") {
-    require "../../helpers/admin_navbar.php";
-    }
-    ?>
+    <?php require "../../helpers/admin_navbar.php"; ?>
     <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

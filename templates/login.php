@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+if (isset($_POST['logout'])) {
+    session_destroy();
+}
+
 if (isset($_SESSION['login'])) {
     switch ($_SESSION['role']) {
     case "studente":
@@ -24,8 +28,8 @@ if (isset($_POST['comando'])) {
     require "../include/db.php";
     $conn = accediDb();
 
-    $post_login = $conn->real_escape_string(htmlspecialchars($_POST['login']));
-    $post_password = $conn->real_escape_string(htmlspecialchars($_POST['password']));
+    $post_login = normalize($conn, $_POST['login']);
+    $post_password = normalize($conn, $_POST['password']);
 
     $sql = "SELECT * FROM utente WHERE login='$post_login'";
     $result = $conn->query($sql);

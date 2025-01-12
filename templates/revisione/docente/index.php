@@ -13,9 +13,10 @@ if ($_SESSION['role'] != "docente") {
     die();
 }
 
+$_SESSION['current_page'] = "revisione";
 $id_utente = $_SESSION['id_utente'];
 
-require "../../include/db.php";
+require "../../../include/db.php";
 $conn = accediDb();
 ?>
 <!DOCTYPE html>
@@ -27,7 +28,7 @@ $conn = accediDb();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <?php require "../helpers/studente_navbar.php"; ?>
+    <?php require "../../helpers/docente_navbar.php"; ?>
     <div class="container my-4">
         <h1 class="d-flex justify-content-center">Revisione</h1>
         <div class="row gap-4 justify-content-center mt-5">
@@ -38,17 +39,18 @@ $conn = accediDb();
                 LEFT JOIN sessione_test ON sessione_test.id_test=test.id
                 LEFT JOIN risposta ON risposta.id_sessione_test=sessione_test.id
                 LEFT JOIN utente ON utente.id=risposta.id_studente
-                WHERE test.id_docente=$id_utente AND risposta.id IS NOT NULL"
+                LEFT JOIN correzione ON correzione.id_test=test.id
+                WHERE test.id_docente=$id_utente AND risposta.id IS NOT NULL AND correzione.id IS NULL";
             ?>
             <?php $result = $conn->query($sql); ?>
             <?php while ($row = $result->fetch_assoc()): ?>
             <div class="col-md-3">
                 <div class="card h-100 position-relative">
-                    <img class="card-img-top" src="../../test.jpg" alt="Card image">
+                    <img class="card-img-top" src="../../../test.jpg" alt="Card image">
                     <div class="card-body position-static d-flex flex-column">
                         <h4 class="card-title"><?= $row['titolo'] ?></h4>
                         <p class="card-text">Verifica di <?= $row['CognomeStudente']." ".$row['NomeStudente'] ?></p>
-                        <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-primary stretched-link">Correggi test</a>
+                        <a href="view.php?id_test=<?= $row['id'] ?>&id_studente=<?= $row['IdStudente'] ?>" class="btn btn-primary stretched-link">Correggi test</a>
                     </div>
                 </div>
             </div>

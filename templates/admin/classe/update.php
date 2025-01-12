@@ -19,7 +19,7 @@ if (isset($_GET['classe'])) {
     require "../../../include/db.php";
     $conn = accediDb();
 
-    $classe = $_GET['classe'];
+    $classe = normalize($conn, $_GET['classe']);
 
     if (isset($_POST['update'])) {
         $new_class = normalize($conn, $_POST['classe']);

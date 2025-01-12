@@ -7,21 +7,25 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-$_SESSION['current_page'] = "utente";
+if ($_SESSION['role'] != "admin") {
+    http_response_code(403);
 
-$ruolo = "admin";
+    die();
+}
+
+$_SESSION['current_page'] = "utente";
 
 if (isset($_GET['id'])) {
     require "../../../include/db.php";
     $conn = accediDb();
 
-    $id = $_GET['id'];
+    $id = normalize($conn, $_GET['id']);
 
     if (isset($_POST['update'])) {
-        $nome = $conn->real_escape_string($_POST['nome']);
-        $cognome = $conn->real_escape_string($_POST['cognome']);
-        $login = $conn->real_escape_string($_POST['login']);
-        $password = $conn->real_escape_string($_POST['password']);
+        $nome = normalize($conn, $_POST['nome']);
+        $cognome = normalize($conn, $_POST['cognome']);
+        $login = normalize($conn, $_POST['login']);
+        $password = normalize($conn, $_POST['password']);
     
         $sql = "UPDATE utente SET nome='$nome', password='$password', 
             cognome='$cognome', login='$login' WHERE id=$id";
@@ -57,11 +61,7 @@ if (isset($_GET['id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <?php
-    if ($ruolo == "admin") {
-    require "../../helpers/admin_navbar.php";
-    }
-    ?>
+    <?php require "../../helpers/admin_navbar.php"; ?>
     <div class="container my-4">
         <h1>Modifica utente</h1>
         <form method="post">

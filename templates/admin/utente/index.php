@@ -7,15 +7,19 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-$_SESSION['current_page'] = "utente";
+if ($_SESSION['role'] != "admin") {
+    http_response_code(403);
 
-$ruolo = "admin";
+    die();
+}
+
+$_SESSION['current_page'] = "utente";
 
 require "../../../include/db.php";
 $conn = accediDb();
 
 if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 1) {
-    $id = $_POST['id'];
+    $id = normalize($conn, $_POST['id']);
 
     $sql = "DELETE FROM utente WHERE id=$id";
 
@@ -42,11 +46,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id']) && $_POST['id'] != 
     </style>
 </head>
 <body>
-    <?php
-    if ($ruolo == "admin") {
-    require "../../helpers/admin_navbar.php";
-    }
-    ?>
+    <?php require "../../helpers/admin_navbar.php"; ?>
     <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

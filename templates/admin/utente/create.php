@@ -7,9 +7,13 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-$_SESSION['current_page'] = "utente";
+if ($_SESSION['role'] != "admin") {
+    http_response_code(403);
 
-$ruolo = "admin";
+    die();
+}
+
+$_SESSION['current_page'] = "utente";
 
 if (isset($_POST['create'])) {
     require "../../../include/db.php";
@@ -46,11 +50,7 @@ if (isset($_POST['create'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <?php
-    if ($ruolo == "admin") {
-    require "../../helpers/admin_navbar.php";
-    }
-    ?>
+    <?php require "../../helpers/admin_navbar.php"; ?>
     <div class="container my-4">
     <h1>Creazione utente</h1>
     <form method="post">
