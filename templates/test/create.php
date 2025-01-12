@@ -25,21 +25,23 @@ if (isset($_POST['create'])) {
 
         // Gestione delle domande
         if (isset($_POST['domande'])) {
-
             foreach ($_POST['domande'] as $domanda) {
                 $testo_domanda = $conn->real_escape_string($domanda['testo']);
                 $tipo_domanda = $conn->real_escape_string($domanda['tipo']);
+                $punteggio = $conn->real_escape_string($domanda['punteggio']);
 
                 // Inserisci la domanda nel database
-                $sql_domanda = "INSERT INTO domande (test_id, testo, tipo) VALUES ('$test_id', '$testo_domanda', '$tipo_domanda')";
+                $sql_domanda = "INSERT INTO domanda (id_test, testo_domanda, tipo, punteggio) VALUES ('$test_id', '$testo_domanda', '$tipo_domanda', '$punteggio')";
                 if ($conn->query($sql_domanda) === TRUE) {
                     $domanda_id = $conn->insert_id;
 
-                    // Se la domanda è a risposta multipla, gestisci le risposte prendendo l'id della domanda e lo usa poi per salvare le risposte con il giusto id
+                    // Se la domanda è a risposta multipla, gestisci le risposte
                     if ($tipo_domanda === 'multipla' && isset($domanda['risposte'])) {
-                        foreach ($domanda['risposte'] as $risposta) {
+                        foreach ($domanda['risposte'] as $index => $risposta) {
                             $testo_risposta = $conn->real_escape_string($risposta);
-                            $sql_risposta = "INSERT INTO risposta (domanda_id, testo) VALUES ('$domanda_id', '$testo_risposta')";
+                            // Verifica se la risposta è contrassegnata come corretta
+                            $corretta = (isset($domanda['corrette']) && in_array($index, $domanda['corrette'])) ? 1 : 0;
+                            $sql_risposta = "INSERT INTO domanda_multipla (id_domanda, testo_opzione, corretta) VALUES ('$domanda_id', '$testo_risposta', '$corretta')";
                             $conn->query($sql_risposta);
                         }
                     }
@@ -65,7 +67,6 @@ if (isset($_POST['create'])) {
 </head>
 <body>
     <?php
-    //non permanente
     if ($ruolo == "admin") {
         require "../helpers/admin_navbar.php";
     }
@@ -82,12 +83,10 @@ if (isset($_POST['create'])) {
                 <textarea class="form-control" id="descrizione" name="descrizione" rows="3" required></textarea>
             </div>
 
-            <div id="domande">
-            </div>
+            <div id="domande"></div>
 
-            <!-- i due bottoni che si occupano di creare i tipi di domande -->
-            <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('multipla')"> + domanda multiple</button>
-            <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('aperta')"> + domanda aperta</button>
+            <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('multipla')"> + Domanda Multipla</button>
+            <button type="button" class="btn btn-secondary" onclick="aggiungiDomanda('aperta')"> + Domanda Aperta</button>
 
             <button type="submit" name="create" class="btn btn-primary mt-3">Crea Test</button>
         </form>
@@ -100,13 +99,15 @@ if (isset($_POST['create'])) {
             domandaCount++;
             const domandeDiv = document.getElementById('domande');
 
-            // Crea un contenitore per la domanda, dividere la creazione della domada e la sua differenziazione in 2 parti concise
+            // Crea un contenitore per la domanda
             const domandaDiv = document.createElement('div');
-            domandaDiv.className = 'mb-3';
+            domandaDiv.className = 'mb-3 border p-3';
             domandaDiv.innerHTML = `
                 <label for="domanda${domandaCount}" class="form-label">Domanda ${domandaCount}:</label>
                 <input type="text" class="form-control" name="domande[${domandaCount}][testo]" required>
                 <input type="hidden" name="domande[${domandaCount}][tipo]" value="${tipo}">
+                <label for="punteggio${domandaCount}" class="form-label mt-2">Punteggio:</label>
+                <input type="number" class="form-control" name="domande[${domandaCount}][punteggio]" min="1" required>
             `;
 
             // Se la domanda è a risposta multipla, aggiungi campi per le risposte
@@ -115,8 +116,14 @@ if (isset($_POST['create'])) {
                 risposteDiv.className = 'mb-3';
                 risposteDiv.innerHTML = `
                     <label>Risposte:</label>
-                    <input type="text" class="form-control mb-2" name="domande[${domandaCount}][risposte][]" placeholder="Risposta 1" required>
-                    <input type="text" class="form-control mb-2" name="domande[${domandaCount}][risposte][]" placeholder="Risposta 2" required>
+                    <div>
+                        <input type="text" class="form-control mb-2" name="domande[${domandaCount}][risposte][]" placeholder="Risposta 1" required>
+                        <input type="checkbox" name="domande[${domandaCount}][corrette][]" value="0"> Corretta
+                    </div>
+                    <div>
+                        <input type="text" class="form-control mb-2" name="domande[${domandaCount}][risposte][]" placeholder="Risposta 2" required>
+                        <input type="checkbox" name="domande[${domandaCount}][corrette][]" value="1"> Corretta
+                    </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="aggiungiRisposta(this)">Aggiungi risposta</button>
                 `;
                 domandaDiv.appendChild(risposteDiv);
@@ -127,11 +134,11 @@ if (isset($_POST['create'])) {
 
         function aggiungiRisposta(button) {
             const risposteDiv = button.parentElement;
-            const nuovaRisposta = document.createElement('input');
-            nuovaRisposta.type = 'text';
-            nuovaRisposta.className = 'form-control mb-2';
-            nuovaRisposta.name = button.previousElementSibling.name; // Usa lo stesso nome dell'ultima risposta
-            nuovaRisposta.placeholder = 'Nuova risposta';
+            const nuovaRisposta = document.createElement('div');
+            nuovaRisposta.innerHTML = `
+                <input type="text" class="form-control mb-2" name="${button.previousElementSibling.name}" placeholder="Nuova risposta" required>
+                <input type="checkbox" name="${button.previousElementSibling.previousElementSibling.name}" value="${risposteDiv.children.length - 1}"> Corretta
+            `;
             risposteDiv.insertBefore(nuovaRisposta, button);
         }
     </script>
