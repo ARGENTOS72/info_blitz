@@ -2,7 +2,20 @@
 session_start();
 
 if (isset($_SESSION['login'])) {
-    header("Location: admin/utente/index.php");
+    switch ($_SESSION['role']) {
+    case "studente":
+        header("Location: sessione/index.php");
+        
+        break;
+    case "docente":
+        header("Location: revisione/index.php");
+        
+        break;
+    case "admin":
+        header("Location: admin/utente/index.php");
+        
+        break;
+    }
 
     die();
 }

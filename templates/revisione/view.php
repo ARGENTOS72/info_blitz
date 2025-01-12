@@ -7,14 +7,13 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-if ($_SESSION['role'] != "studente") {
+if ($_SESSION['role'] != "docente") {
     http_response_code(403);
     
     die();
 }
 
 $_SESSION['current_page'] = "test";
-$id_sessione_test = $_GET['id_sessione_test'];
 
 if (isset($_GET['id'])) {
     require "../../include/db.php";
@@ -22,19 +21,22 @@ if (isset($_GET['id'])) {
 
     $id_test = $_GET['id'];
 
-    $sql = "SELECT * FROM test WHERE id=$id_test";
+    $sql = "SELECT titolo FROM test WHERE id=$id_test";
     $result_test = $conn->query($sql);
 
     if ($result_test->num_rows == 1) {
         $test = $result_test->fetch_assoc();
 
         $titolo = $test['titolo'];
-        $descrizione = $test['descrizione'];
     } else {
-        // Errore non trova test su db (id passato sbagliato)
+        http_response_code(400);
+
+        die();
     }
 } else {
-    // No id
+    http_response_code(400);
+
+    die();
 }
 ?>
 <!DOCTYPE html>

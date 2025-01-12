@@ -7,13 +7,12 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-if ($_SESSION['role'] != "studente") {
+if ($_SESSION['role'] != "docente") {
     http_response_code(403);
     
     die();
 }
 
-$classe = $_SESSION['class'];
 $id_utente = $_SESSION['id_utente'];
 
 require "../../include/db.php";
@@ -30,33 +29,26 @@ $conn = accediDb();
 <body>
     <?php require "../helpers/studente_navbar.php"; ?>
     <div class="container my-4">
-        <h1 class="d-flex justify-content-center">Sessioni attive</h1>
+        <h1 class="d-flex justify-content-center">Revisione</h1>
         <div class="row gap-4 justify-content-center mt-5">
             <?php
             $sql =
-                "SELECT sessione_test.* FROM sessione_test LEFT JOIN risposta
-                ON risposta.id_sessione_test=sessione_test.id AND risposta.id_studente=$id_utente
-                WHERE risposta.id IS NULL AND sessione_test.classe='$classe'"
+                "SELECT DISTINCT test.*, utente.nome AS NomeStudente,
+                utente.cognome AS CognomeStudente, utente.id AS IdStudente FROM test
+                LEFT JOIN sessione_test ON sessione_test.id_test=test.id
+                LEFT JOIN risposta ON risposta.id_sessione_test=sessione_test.id
+                LEFT JOIN utente ON utente.id=risposta.id_studente
+                WHERE test.id_docente=$id_utente AND risposta.id IS NOT NULL"
             ?>
             <?php $result = $conn->query($sql); ?>
-            <?php while ($sessione_test = $result->fetch_assoc()): ?>
-            <?php
-            $result_test = $conn->query("SELECT * FROM test WHERE id=".$sessione_test['id_test']);
-            $test = $result_test->fetch_assoc();
-
-            $result_docente = $conn->query("SELECT cognome FROM utente WHERE id=".$test['id_docente']);
-            $docente = $result_docente->fetch_assoc();
-            ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
             <div class="col-md-3">
                 <div class="card h-100 position-relative">
                     <img class="card-img-top" src="../../test.jpg" alt="Card image">
                     <div class="card-body position-static d-flex flex-column">
-                        <h4 class="card-title"><?= $test['titolo'] ?></h4>
-                        <p class="card-text"><?= $test['descrizione'] ?></p>
-                        <div class="d-flex flex-column mt-auto">
-                            <p class="text-secondary"><?= $docente['cognome'] ?></p>
-                            <a href="view.php?id=<?= $sessione_test['id_test'] ?>&id_sessione_test=<?= $sessione_test['id'] ?>" class="btn btn-primary stretched-link">Tenta test</a>
-                        </div>
+                        <h4 class="card-title"><?= $row['titolo'] ?></h4>
+                        <p class="card-text">Verifica di <?= $row['CognomeStudente']." ".$row['NomeStudente'] ?></p>
+                        <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-primary stretched-link">Correggi test</a>
                     </div>
                 </div>
             </div>

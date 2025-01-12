@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['login'])) {
-    header("Location: ../../login.php");
+    http_response_code(401);
     
     die();
 }
