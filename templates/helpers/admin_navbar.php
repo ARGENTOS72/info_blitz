@@ -33,10 +33,11 @@ $current_page = (isset($_SESSION['current_page'])) ? $_SESSION['current_page'] :
                         </svg>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item">Action</a></li>
-                        <li><a class="dropdown-item">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item">Something else here</a></li>
+                        <li>
+                            <form action="<?= $site_url ?>quiz/templates/login.php" method="post">
+                                <input type="submit" class="dropdown-item text-danger" value="Logout" name="logout">
+                            </form>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -44,9 +45,6 @@ $current_page = (isset($_SESSION['current_page'])) ? $_SESSION['current_page'] :
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= ($current_page == "classe") ? "active" : "" ?>" <?= ($current_page == "classe") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/admin/classe/">Classe</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= ($current_page == "test") ? "active" : "" ?>" <?= ($current_page == "test") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/test">Test</a>
                 </li>
             </ul>
         </div>

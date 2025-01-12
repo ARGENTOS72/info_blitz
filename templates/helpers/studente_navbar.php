@@ -33,18 +33,18 @@ $current_page = (isset($_SESSION['current_page'])) ? $_SESSION['current_page'] :
                         </svg>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item">Test</a></li>
-                        <li><a class="dropdown-item">Test</a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="<?= $site_url ?>quiz/templates/login.php" method="post">
-                                <input type="button" class="dropdown-item text-danger" value="Logout" name="logout">
+                                <input type="submit" class="dropdown-item text-danger" value="Logout" name="logout">
                             </form>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page == "test") ? "active" : "" ?>" <?= ($current_page == "test") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/sessione/index.php">Sessioni test</a>
+                    <a class="nav-link <?= ($current_page == "sessione") ? "active" : "" ?>" <?= ($current_page == "sessione") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/sessione/">Sessioni test</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= ($current_page == "revisione") ? "active" : "" ?>" <?= ($current_page == "revisione") ? "aria-current=\"page\"" : "" ?> href="<?= $site_url ?>quiz/templates/revisione/studente/">Revisione test</a>
                 </li>
             </ul>
         </div>

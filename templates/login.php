@@ -2,8 +2,11 @@
 session_start();
 
 if (isset($_POST['logout'])) {
+    session_unset();
+
     session_destroy();
 }
+
 
 if (isset($_SESSION['login'])) {
     switch ($_SESSION['role']) {

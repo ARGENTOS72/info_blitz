@@ -24,7 +24,11 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
     $id = normalize($conn, $_POST['id']);
 
     $sql = "DELETE FROM test WHERE id=$id";
+    $conn->query($sql);
 
+    $sql =
+        "DELETE domanda, domanda_multipla FROM domanda LEFT JOIN domanda_multipla ON domanda_multipla.id_domanda=domanda.id
+        WHERE domanda.id_test=$id";
     $conn->query($sql);
 }
 ?>
@@ -97,14 +101,6 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
                                         <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                     </svg>
                                     Visualizza
-                                </a>
-                                <a href="update.php?id=<?= $row['id'] ?>"
-                                    class="btn btn-outline-primary d-flex align-items-center gap-1" role="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                                    </svg>
-                                    Update
                                 </a>
                                 <button class="btn btn-outline-danger btn-remove-test d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#removeModal" data-test-id="<?= $row['id'] ?>">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
