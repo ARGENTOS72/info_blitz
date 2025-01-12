@@ -13,8 +13,8 @@ if ($_SESSION['role'] != "studente") {
     die();
 }
 
-$_SESSION['current_page'] = "test";
-$id_sessione_test = $_GET['id_sessione_test'];
+$_SESSION['current_page'] = "sessione";
+$id_sessione_test = normalize($conn, $_GET['id_sessione_test']);
 
 if (isset($_GET['id'])) {
     require "../../include/db.php";

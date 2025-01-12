@@ -13,6 +13,7 @@ if ($_SESSION['role'] != "studente") {
     die();
 }
 
+$_SESSION['current_page'] = "sessione";
 $classe = $_SESSION['class'];
 $id_utente = $_SESSION['id_utente'];
 

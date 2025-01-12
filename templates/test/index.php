@@ -7,7 +7,7 @@ if (!isset($_SESSION['login'])) {
     die();
 }
 
-if ($_SESSION['role'] == "studente") {
+if ($_SESSION['role'] != "docente") {
     http_response_code(403);
 
     die();
@@ -15,9 +15,7 @@ if ($_SESSION['role'] == "studente") {
 
 $_SESSION['current_page'] = "test";
 
-// Recupera il ruolo dall'utente (esempio: dalla sessione o dal database)
-$ruolo = $_SESSION['role']; // Assicurati che il ruolo sia memorizzato nella sessione dopo il login
-$id_utente = $_SESSION['id_utente']; // ID dell'utente loggato (utile per i docenti)
+$id_utente = $_SESSION['id_utente'];
 
 require "../../include/db.php";
 $conn = accediDb();
@@ -39,16 +37,7 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <?php
-    // Mostra la navbar in base al ruolo
-    if ($ruolo == "admin") {
-        require "../helpers/admin_navbar.php";
-    } else if ($ruolo == "docente") {
-        require "../helpers/docente_navbar.php";
-    } else if ($ruolo == "studente") {
-        require "../helpers/studente_navbar.php";
-    }
-    ?>
+    <?php require "../helpers/docente_navbar.php"; ?>
     <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -72,26 +61,17 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
         <div class="d-flex align-items-center mb-3">
             <h1 class="pe-3">Lista Test</h1>
             <!-- Mostra il pulsante "Crea" solo per gli admin -->
-            <?php if ($ruolo == "admin" || $ruolo == "docente"): ?>
-                <a href="create.php" class="btn btn-primary d-flex align-items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                    </svg>
-                    Crea
-                </a>
-            <?php endif; ?>
+            <a href="create.php" class="btn btn-primary d-flex align-items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+                Crea
+            </a>
         </div>
 
         <?php
-        // Query personalizzata in base al ruolo
-        if ($ruolo == "admin") {
-            // Admin vede tutti i test
-            $sql = "SELECT * FROM test";
-        } elseif ($ruolo == "docente") {
-            // Docente vede solo i test associati al proprio ID
-            $sql = "SELECT * FROM test WHERE id_docente = $id_utente";
-        }
+        $sql = "SELECT * FROM test WHERE id_docente=$id_utente";
 
         $result = $conn->query($sql);
         ?>
@@ -101,10 +81,6 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
                 <tr>
                     <th>Titolo</th>
                     <th>Descrizione</th>
-                    <!-- Mostra la colonna "Id Docente" solo per gli admin -->
-                    <?php if ($ruolo == "admin"): ?>
-                        <th>Id Docente</th>
-                    <?php endif; ?>
                     <th></th>
                 </tr>
             </thead>
@@ -113,10 +89,6 @@ if (isset($_POST['remove_definetly']) && isset($_POST['id'])) {
                     <tr>
                         <td><?= $row['titolo'] ?></td>
                         <td><?= (empty($row['descrizione'])) ? "Nessuna descrizione" : $row['descrizione'] ?></td>
-                        <!-- Mostra l'ID del docente solo per gli admin -->
-                        <?php if ($ruolo == "admin"): ?>
-                            <td><a href="../admin/utente/view.php?id=<?= $row['id_docente'] ?>"><?= $row['id_docente'] ?></a></td>
-                        <?php endif; ?>
                         <td>
                             <div class="d-flex align-items-center gap-1">
                                 <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-outline-secondary d-flex align-items-center gap-1">
