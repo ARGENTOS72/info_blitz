@@ -34,6 +34,7 @@ $conn = accediDb();
         <h1 class="d-flex justify-content-center">Sessioni attive</h1>
         <div class="row gap-4 justify-content-center mt-5">
             <?php
+            // serve a selezionare se presente la risposta che un determinato studente, e se presente non permette allo studente di vedere il test
             $sql =
                 "SELECT sessione_test.* FROM sessione_test LEFT JOIN risposta
                 ON risposta.id_sessione_test=sessione_test.id AND risposta.id_studente=$id_utente

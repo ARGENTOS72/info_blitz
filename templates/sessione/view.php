@@ -95,13 +95,13 @@ if (isset($_GET['id'])) {
                     <?php endwhile; ?>
 
                     <?php break; ?>
-                    <!-- FINE DOMANDA MULTIPLA -->
-                    
-                    <!-- DOMANDA APERTA -->
-                    <?php case "aperta": ?>
-                    <textarea style="resize: both;" name="<?= $id_domanda ?>" cols="42" rows="6"></textarea>
-                    <?php break; ?>
-                    <!-- FINE DOMANDA APERTA -->
+                        <!-- FINE DOMANDA MULTIPLA -->
+                        
+                        <!-- DOMANDA APERTA -->
+                        <?php case "aperta": ?>
+                            <textarea style="resize: both;" name="<?= $id_domanda ?>" cols="42" rows="6"></textarea>
+                        <?php break; ?>
+                        <!-- FINE DOMANDA APERTA -->
 
                     <?php endswitch; ?>
                 </div>
