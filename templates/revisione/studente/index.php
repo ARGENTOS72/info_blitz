@@ -33,6 +33,7 @@ $conn = accediDb();
         <h1 class="d-flex justify-content-center">Revisione</h1>
         <div class="row gap-4 justify-content-center mt-5">
             <?php
+            //serve per mostrare allo studente i test che sono stati correti dai professori
             $sql =
                 "SELECT DISTINCT test.* FROM test
                 LEFT JOIN correzione ON correzione.id_test=test.id

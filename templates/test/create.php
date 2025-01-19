@@ -160,6 +160,7 @@ if (isset($_POST['create'])) {
         }
 
         function aggiungiRisposta(button) {
+            
             const rispostaCounter = parseInt(button.dataset['rispostaCounter'], 10);
             button.dataset['rispostaCounter'] = rispostaCounter + 1;
             const risposteDiv = button.parentElement;

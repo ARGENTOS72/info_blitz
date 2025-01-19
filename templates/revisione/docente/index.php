@@ -33,6 +33,7 @@ $conn = accediDb();
         <h1 class="d-flex justify-content-center">Revisione</h1>
         <div class="row gap-4 justify-content-center mt-5">
             <?php
+            //serve per permettere al docente di visualizzare il test dello studente, corregerlo e salvare le correzioni
             $sql =
                 "SELECT DISTINCT test.*, utente.nome AS NomeStudente,
                 utente.cognome AS CognomeStudente, utente.id AS IdStudente FROM test

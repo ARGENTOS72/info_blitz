@@ -10,6 +10,7 @@ if (!isset($_SESSION['login'])) {
 $_SESSION['current_page'] = "test";
 
 $ruolo = "admin";
+$session_test_error = false;
 
 if (isset($_GET['id'])) {
     require "../../include/db.php";
@@ -25,11 +26,26 @@ if (isset($_GET['id'])) {
 
         $titolo = $test['titolo'];
         $descrizione = $test['descrizione'];
+
+        if (isset($_POST['aggiungi_classe'])) {
+            $classe = normalize($conn, $_POST['classe_nuova']);
+        
+            try {
+                $sql = "INSERT INTO sessione_test (id_test, classe) VALUES ($id_test, '$classe')";
+                $conn->query($sql);
+            } catch (mysqli_sql_exception $err) {
+                $session_test_error = true;
+            }
+        }
     } else {
-        // Errore non trova test su db (id passato sbagliato)
+        http_response_code(404);
+
+        die();
     }
 } else {
-    // No id
+    http_response_code(404);
+
+    die();
 }
 ?>
 <!DOCTYPE html>
@@ -42,9 +58,46 @@ if (isset($_GET['id'])) {
 </head>
 <body>
     <?php require "../helpers/docente_navbar.php"; ?>
+    <?php if ($session_test_error): ?>
+    <div class="toast show position-fixed bottom-0 end-0 p-3 z-3 mb-3 me-3" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto text-danger">Errore aggiunta</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Aggiungere lo stesso test alla stessa classe non si può!
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="container">
         <h1><?= $titolo ?></h1>
         <h2><?= $descrizione ?></h2>
+        <div class="container mb-3">
+            <p>Assegnato a: </p>
+            <?php
+            $sql =
+                "SELECT classe.classe FROM sessione_test
+                LEFT JOIN classe ON classe.classe=sessione_test.classe
+                WHERE id_test=$id_test";
+            $result = $conn->query($sql);
+            
+            while ($sessione = $result->fetch_assoc()):
+            ?>
+            <div classe="container">
+                <label for="classe<?= $sessione['classe'] ?>">Classe</label>
+                <input type="text" id="classe<?= $sessione['classe'] ?>" value="<?= $sessione['classe'] ?>" name="classi_assegnate" disabled>
+            </div>
+            <?php endwhile; ?>
+            <div>
+                <p class="mb-2">Assegna a:</p>
+                <form method="post">
+                    <label for="classe_nuova">Classe:</label>
+                    <select name="classe_nuova" id="classe_nuova" class="mb-2"></select>
+                    <br>
+                    <input type="submit" value="Aggiungi" name="aggiungi_classe">
+                </form>
+            </div>
+        </div>
         <form action="elabora.php" method="post">
             <!-- DOMANDE -->
             <?php
@@ -124,6 +177,39 @@ if (isset($_GET['id'])) {
                 event.returnValue = "";
             }
         });
+
+        const selectClassi = document.getElementById('classe_nuova');
+        const classiAssegnateElement = document.getElementsByName('classi_assegnate');
+        let classiAssegnate = [];
+
+        Array.from(classiAssegnateElement).forEach(element => {
+            classiAssegnate.push(element.value);
+        });
+
+        let req = new XMLHttpRequest();
+        req.open("GET", "../../controllers/classi.php");
+    
+        req.onload = () => {
+            if (req.status === 200) {
+                let classi = JSON.parse(req.responseText);
+
+                classi.forEach(classe => {
+                    if (!classiAssegnate.includes(classe)) {
+                        let classe_option = document.createElement('option');
+                        classe_option.value = classe;
+                        classe_option.innerText = classe;
+                        
+                        selectClassi.appendChild(classe_option);
+                    }
+                });
+
+                if (selectClassi.length === 0) {
+                    selectClassi.parentElement.parentElement.remove();
+                }
+            }
+        }
+
+        req.send();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
