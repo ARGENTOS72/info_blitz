@@ -7,26 +7,6 @@ if (isset($_POST['logout'])) {
     session_destroy();
 }
 
-
-if (isset($_SESSION['login'])) {
-    switch ($_SESSION['role']) {
-    case "studente":
-        header("Location: sessione/index.php");
-        
-        break;
-    case "docente":
-        header("Location: revisione/index.php");
-        
-        break;
-    case "admin":
-        header("Location: admin/utente/index.php");
-        
-        break;
-    }
-
-    die();
-}
-
 if (isset($_POST['comando'])) {
     require "../include/db.php";
     $conn = accediDb();
@@ -52,17 +32,28 @@ if (isset($_POST['comando'])) {
                 $studente = $result->fetch_assoc();
 
                 $_SESSION['class'] = $studente['classe'];
-
-                header("location: sessione/index.php");
-
-                die();
             }
-    
-            header("location: admin/utente/index.php");
-
-            die();
         }
     }
+}
+
+if (isset($_SESSION['login'])) {
+    switch ($_SESSION['role']) {
+    case "studente":
+        header("Location: sessione/index.php");
+        
+        break;
+    case "docente":
+        header("Location: test/index.php");
+        
+        break;
+    case "admin":
+        header("Location: admin/utente/index.php");
+        
+        break;
+    }
+
+    die();
 }
 ?>
 <!DOCTYPE html>

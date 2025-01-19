@@ -14,12 +14,12 @@ if ($_SESSION['role'] != "studente") {
 }
 
 $_SESSION['current_page'] = "sessione";
-$id_sessione_test = normalize($conn, $_GET['id_sessione_test']);
 
 if (isset($_GET['id'])) {
     require "../../include/db.php";
     $conn = accediDb();
 
+    $id_sessione_test = normalize($conn, $_GET['id_sessione_test']);
     $id_test = normalize($conn, $_GET['id']);
 
     $sql = "SELECT * FROM test WHERE id=$id_test";
